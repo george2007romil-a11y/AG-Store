@@ -1,0 +1,71 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - A.G Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body class="success-page-body">
+
+<header>
+    <h1>A.G Store</h1>
+    <p>Order Confirmed</p>
+</header>
+
+<section class="cart-container success-page">
+
+    <div class="success-icon">✓</div>
+
+    <h2>Order Confirmed Successfully!</h2>
+
+    <p>Thank you, {{ order.customer_name }}.</p>
+
+    <p class="order-number">
+        Your order number:
+        <strong>#{{ order.id }}</strong>
+    </p>
+
+    
+<div class="success-summary">
+
+    <div class="summary-row">
+        <span>Products subtotal</span>
+        <span>{{ items_total|floatformat:2 }} EGP</span>
+    </div>
+
+    <div class="summary-row">
+        <span>Discount</span>
+        <span>{{ order.discount_amount|floatformat:2 }} EGP</span>
+    </div>
+
+    <div class="summary-row">
+        <span>Shipping</span>
+        <span>{{ order.shipping_fee|floatformat:2 }} EGP</span>
+    </div>
+
+    {% if order.coupon_code %}
+    <div class="summary-row">
+        <span>Coupon used</span>
+        <span>{{ order.coupon_code }}</span>
+    </div>
+    {% endif %}
+
+    <div class="summary-row final-total">
+        <span>Final total</span>
+        <strong>{{ order.total_price|floatformat:2 }} EGP</strong>
+    </div>
+
+</div>
+
+    <a href="{% url 'home' %}" class="success-button">
+        Continue Shopping
+    </a>
+
+</section>
+
+</body>
+</html>
+

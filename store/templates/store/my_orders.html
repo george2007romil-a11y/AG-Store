@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - A.G Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>A.G Store</h1>
+    <p>My Orders</p>
+</header>
+
+<section class="cart-container">
+    <h2>My Orders</h2>
+
+    {% for order in orders %}
+        <div class="cart-total" style="margin-bottom:20px; text-align:left;">
+            <h3>Order #{{ order.id }}</h3>
+            <p>Status: {{ order.get_status_display }}</p>
+            <p>Total: {{ order.total_price }} EGP</p>
+            <p>Created: {{ order.created_at }}</p>
+
+            <h4>Items</h4>
+
+            {% for item in order.items.all %}
+                <p>
+                    {{ item.product.name }}
+                    × {{ item.quantity }}
+                    — {{ item.price }} EGP
+                </p>
+            {% endfor %}
+        </div>
+    {% empty %}
+        <p>You have no orders yet.</p>
+    {% endfor %}
+
+    <a href="{% url 'home' %}">Continue Shopping</a>
+</section>
+
+</body>
+</html>

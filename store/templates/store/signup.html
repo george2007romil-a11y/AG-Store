@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - A.G Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+<header>
+    <h1>A.G Store</h1>
+    <p>Create Account</p>
+</header>
+
+<section class="cart-container">
+    <h2>Create Account</h2>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="post" class="checkout-form">
+        {% csrf_token %}
+
+        <label>Username</label>
+        <input type="text" name="username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <label>Phone Number</label>
+        <input type="tel" name="phone">
+
+        <label>Delivery Address</label>
+        <textarea name="address" rows="4"></textarea>
+
+        <label>Referral Code (Optional)</label>
+        <input
+            type="text"
+            name="referral_code"
+            value="{{ referral_code|default:'' }}"
+            placeholder="Enter a friend's referral code"
+            maxlength="12"
+            autocapitalize="characters"
+        >
+
+        <button type="submit" class="place-order-btn">Create Account</button>
+    </form>
+
+    <a href="{% url 'login' %}">Already have an account? Login</a>
+</section>
+</body>
+</html>

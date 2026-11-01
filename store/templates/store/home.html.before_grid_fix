@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6D28D9">
+    <title>A.G Store | Premium Eyewear</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+    <a class="brand" href="{% url 'home' %}">
+        <span class="brand-mark">A.G</span>
+        <span class="brand-name">STORE<small>PREMIUM EYEWEAR</small></span>
+    </a>
+
+    <nav class="header-actions">
+        <a href="{% url 'home' %}">Shop</a>
+        <a href="{% url 'cart' %}" class="cart-link">
+            Cart <span class="cart-count">{{ cart_count }}</span>
+        </a>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-copy">
+            <span class="eyebrow">YOUR STYLE. YOUR VISION.</span>
+            <h1>See the world<br>in <span>your style.</span></h1>
+            <p>Discover eyewear that brings your look into focus.</p>
+            <a href="#products" class="primary-btn">Explore Collection <span>↗</span></a>
+            <div class="hero-note">
+                <span class="hero-dot"></span>
+                Sunglasses &amp; Medical Frames
+            </div>
+        </div>
+
+        {% if products %}
+        <div class="hero-product">
+            {% if products.0.image %}
+                <img src="{{ products.0.image.url }}" alt="{{ products.0.name }}">
+            {% else %}
+                <div class="image-placeholder">A.G</div>
+            {% endif %}
+            <div class="hero-product-label">
+                <span>FEATURED PICK</span>
+                <strong>{{ products.0.name }}</strong>
+                <b>{{ products.0.price }} EGP</b>
+            </div>
+            <span class="hero-stamp">A.G<br>ESSENTIALS</span>
+        </div>
+        {% else %}
+        <div class="hero-product hero-empty">
+            <div class="image-placeholder">A.G</div>
+            <span>YOUR NEXT FAVORITE FRAME</span>
+        </div>
+        {% endif %}
+        <div class="hero-decoration"></div>
+    </section>
+
+    <section class="shop-section" id="products">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">FIND YOUR FIT</span>
+                <h2>Made to be <span>seen.</span></h2>
+            </div>
+            <p>Explore the collection</p>
+        </div>
+
+        <form method="get" class="search-form">
+            <span class="search-icon">⌕</span>
+            <input type="search" name="q"
+                   placeholder="Search frames, styles..."
+                   value="{{ request.GET.q|default:'' }}">
+            {% if request.GET.category %}
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+            {% endif %}
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="category-links">
+            <a href="{% url 'home' %}" class="{% if not request.GET.category %}active{% endif %}">All Products</a>
+            {% for value, label in categories %}
+                <a href="?category={{ value }}{% if request.GET.q %}&q={{ request.GET.q|urlencode }}{% endif %}"
+                   class="{% if request.GET.category == value %}active{% endif %}">{{ label }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="products">
+            {% if products %}
+                {% for product in products %}
+                    {% if forloop.first %}
+                        <article class="product-card featured-card">
+                    {% else %}
+                        <article class="product-card">
+                    {% endif %}
+                        <div class="product-image-wrap">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+                            {% else %}
+                                <div class="image-placeholder">A.G</div>
+                            {% endif %}
+                            {% if product.old_price and product.old_price > product.price %}
+                                <span class="product-badge">SPECIAL PRICE</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-info">
+                            <span class="product-category">
+                                {% if product.category == 'medical_frames' %}MEDICAL FRAMES{% else %}SUNGLASSES{% endif %}
+                            </span>
+                            <h3>{{ product.name }}</h3>
+                            <p class="description">{{ product.description|truncatewords:18 }}</p>
+                            <div class="product-bottom">
+                                <div class="price">
+                                    {% if product.old_price %}
+                                        <span class="old-price">{{ product.old_price }} EGP</span>
+                                    {% endif %}
+                                    <span class="current-price">{{ product.price }} <small>EGP</small></span>
+                                </div>
+                                <span class="stock">
+                                    {% if product.stock > 0 %}In stock{% else %}Out of stock{% endif %}
+                                </span>
+                            </div>
+
+                            {% if product.stock > 0 %}
+                                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="add-to-cart">Add to Cart <span>＋</span></button>
+                                </form>
+                            {% else %}
+                                <button type="button" class="add-to-cart" disabled>Currently Unavailable</button>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <span class="empty-icon">⌕</span>
+                    <h3>No products found</h3>
+                    <p>Try another search or browse all products.</p>
+                    <a class="primary-btn" href="{% url 'home' %}">View All Products</a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a class="footer-brand" href="{% url 'home' %}">A.G STORE<span>.</span></a>
+    <p>Find your frame. Define your look.</p>
+    <span>© A.G Store</span>
+</footer>
+
+</body>
+</html>

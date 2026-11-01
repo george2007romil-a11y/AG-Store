@@ -1,0 +1,42 @@
+{% load static %}
+<html lang=en>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - A.G Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>A.G Store</h1>
+    <p>Order Confirmed</p>
+</header>
+
+<section class="cart-container success-page">
+
+    <h2>Order Confirmed Successfully!</h2>
+
+    <p>Thank you, {{ order.customer_name }}.</p>
+
+    <p>
+        Your order number is:
+        <strong>#{{ order.id }}</strong>
+    </p>
+
+    <div class="cart-total">
+        <h2>Total: {{ order.total_price }}
+            <p>Discount: {{ order.discount_amount }}
+            <p>Shipping: {{ order.shipping_fee }} EGP</p>
+            <p><strong>Final total: {{ order.total_price }} EGP</strong></p> EGP</p>
+            {% if order.coupon_code %}
+            <p>Coupon used: {{ order.coupon_code }}</p>
+            {% endif %} EGP</h2>
+    </div>
+
+    <a href="{% url 'home' %}">Continue Shopping</a>
+
+</section>
+
+</body>
+</html>

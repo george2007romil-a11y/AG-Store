@@ -1,0 +1,73 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - A.G Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>A.G Store</h1>
+    <p>Checkout</p>
+    <a href="{% url 'cart' %}" class="cart-link">
+        🛒 Cart ({{ cart_count }})
+    </a>
+</header>
+
+<section class="cart-container">
+    <h2>Order Summary</h2>
+
+    {% for item in cart_items %}
+        <div class="cart-item">
+            {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+            {% endif %}
+            <div>
+                <h3>{{ item.product.name }}</h3>
+                <p>Quantity: {{ item.quantity }}</p>
+                <p>Price: {{ item.product.price }} EGP</p>
+                <p>Subtotal: {{ item.subtotal }} EGP</p>
+            </div>
+        </div>
+    {% empty %}
+        <p>Your cart is empty.</p>
+    {% endfor %}
+
+    <div class="cart-total">
+        <h2>Total: {{ total }} EGP</h2>
+    </div>
+
+    <form method="post" class="checkout-form">
+        {% csrf_token %}
+
+        <h2>Coupon / Discount</h2>
+    <label for="coupon_code">Coupon Code</label>
+    <input type="text" id="coupon_code" name="coupon_code" value="{{ coupon_code|default:'' }}" placeholder="Enter coupon code">
+    {% if coupon_error %}<p class="coupon-error">{{ coupon_error }}</p>{% endif %}
+    <p>Subtotal: {{ total }} EGP</p>
+    <p>Discount: {{ discount }} EGP</p>
+    <p>Shipping: {{ shipping_fee }} EGP</p>
+    <p><strong>Final total including shipping: {{ final_total }} EGP</strong></p>
+    <h2>Customer Information</h2>
+
+        <label for="customer_name">Full Name</label>
+        <input type="text" id="customer_name" name="customer_name" value="{% if profile %}{{ profile.user.username }}{% endif %}" required>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" value="{% if profile %}{{ profile.phone }}{% endif %}" required>
+
+        <label for="address">Delivery Address</label>
+        <textarea id="address" name="address" rows="4" required>{% if profile %}{{ profile.address }}{% endif %}</textarea>
+
+        <button type="submit" class="place-order-btn">
+            Place Order
+        </button>
+    </form>
+
+    <a href="{% url 'cart' %}">Back to Cart</a>
+</section>
+
+</body>
+</html>

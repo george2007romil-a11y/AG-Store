@@ -1,0 +1,50 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - A.G Store</title>
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>A.G Store</h1>
+    <p>Track Your Order</p>
+</header>
+
+<section class="cart-container">
+    <h2>Track Order</h2>
+
+    <form method="post" class="checkout-form">
+        {% csrf_token %}
+
+        <label>Order Number</label>
+        <input type="number" name="order_id" required>
+
+        <label>Phone Number</label>
+        <input type="tel" name="phone" required>
+
+        <button type="submit" class="place-order-btn">
+            Track Order
+        </button>
+    </form>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    {% if order %}
+        <div class="cart-total">
+            <h2>Order #{{ order.id }}</h2>
+            <p>Status: {{ order.get_status_display }}</p>
+            <p>Total: {{ order.total_price }} EGP</p>
+            <p>Created: {{ order.created_at }}</p>
+        </div>
+    {% endif %}
+
+    <a href="{% url 'home' %}">Continue Shopping</a>
+</section>
+
+</body>
+</html>
